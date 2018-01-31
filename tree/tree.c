@@ -3,27 +3,28 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#define COUNT 10
+//custom methods
+void poopulateTreeWithRandomValues(Tree *tree);
 
 int main(int argc, char const *argv[]) {
-  srand(time(NULL)); //for better randomization
-  Tree * tree = (Tree*) malloc(sizeof(Tree));
 
-  int i;
-  for (i = 0; i<20; i++) {
-    Node *node = (Node*)malloc(sizeof(Node));
-    node->value =  rand()%100;
-    add(tree, node);
-  }
+  Tree *tree = (Tree*) malloc(sizeof(Tree));
+
+
+  poopulateTreeWithRandomValues(tree);
 
   int depth = maxDepth(tree->head);
 
-  printf("max depth: %d\n", depth);
-  i = 0;
+  int i = 0;
   while(i<=depth){
-    printNodesAtLevel(tree->head,i,0, depth - i);
+    tree->pretty.print = 0;
+    printNodesAtLevel(tree->head, i ,0 ,depth, tree);
     printf("\n");
     i++;
   }
+
+  traverse(tree->head);
   return 0;
 }
 
@@ -56,26 +57,43 @@ void add(Tree *tree, Node *node){
   }
 }
 
-void printNodesAtLevel(Node *node, int desired, int current, int prettyprint){
+void printNodesAtLevel(Node *node, int desired, int current, int depth, Tree *tree){
+
    if (node)
-   {
+   {  //printf("pretty: %d\n", node->value);
       if (desired == current){
-          int space = (prettyprint) / 2;
-          while(space>=0){
-            printf(" ");
-            space --;
+         if(tree->pretty.print == 0){  // 0 => Y, 1 => N
+            int space = depth - current;
+            while(space>=0){
+              printf(" ");
+              space --;
+            }
           }
-          printf("(%d) ",node->value);
+          if(tree->pretty.print == 1){
+            printf(",");
+          }
+          printf("(%d)",node->value);
+          if(tree->pretty.print == 0){
+            tree->pretty.print = 1;
+          }
       }
       else
       {
-         printNodesAtLevel(node->right, desired, current + 1,  prettyprint);
-         printNodesAtLevel(node->left, desired, current + 1,  prettyprint);
+          printNodesAtLevel(node->right, desired, current + 1,  depth, tree);
+          printNodesAtLevel(node->left, desired, current + 1,  depth, tree);
       }
    }
- }
+}
 
-
+void poopulateTreeWithRandomValues(Tree *tree){
+  srand(time(NULL)); //for better randomization
+  int i;
+  for (i = 0; i<20; i++) {
+    Node *node = (Node*)malloc(sizeof(Node));
+    node->value =  rand()%100;
+    add(tree, node);
+  }
+}
 
 int maxDepth(Node *node) {
     if (!node) {
@@ -92,10 +110,10 @@ int maxDepth(Node *node) {
 
 void traverse(Node *node){
   if(node){
-      //printf("\n it -- %d",node->value); //pre-order
+      // printf("\n it -- %d",node->value); //pre-order
     traverse(node->left);
-      //printf("\n it -- %d",node->value); //in-order
+      // printf("\n it -- %d",node->value); //in-order
     traverse(node->right);
-      //printf("\n it -- %d",node->value); //post-order
+      // printf("\n it -- %d",node->value); //post-order
   }
 }
