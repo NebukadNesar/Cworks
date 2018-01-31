@@ -4,27 +4,17 @@
 #include <time.h>
 #include <stdlib.h>
 #define COUNT 10
-//custom methods
+
+void prettyPrintTree(Tree *tree);
 void poopulateTreeWithRandomValues(Tree *tree);
 
 int main(int argc, char const *argv[]) {
 
   Tree *tree = (Tree*) malloc(sizeof(Tree));
-
-
   poopulateTreeWithRandomValues(tree);
-
-  int depth = maxDepth(tree->head);
-
-  int i = 0;
-  while(i<=depth){
-    tree->pretty.print = 0;
-    printNodesAtLevel(tree->head, i ,0 ,depth, tree);
-    printf("\n");
-    i++;
-  }
-
+  prettyPrintTree(tree);
   traverse(tree->head);
+
   return 0;
 }
 
@@ -84,6 +74,19 @@ void printNodesAtLevel(Node *node, int desired, int current, int depth, Tree *tr
       }
    }
 }
+
+void prettyPrintTree(Tree *tree){
+  int depth = maxDepth(tree->head);
+
+  int i = 0;
+  while(i<=depth){
+    tree->pretty.print = 0;
+    printNodesAtLevel(tree->head, i ,0 ,depth, tree);
+    printf("\n");
+    i++;
+  }
+}
+
 
 void poopulateTreeWithRandomValues(Tree *tree){
   srand(time(NULL)); //for better randomization
