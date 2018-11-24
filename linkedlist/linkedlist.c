@@ -49,6 +49,8 @@ void deletei(LinkedList *l, int val){
     		if (temp->value == val)
     		{
     			prev->link = temp->link;
+                free(temp);
+                break;
     		}
     		prev = temp;
     		temp = temp->link;
